@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 
@@ -40,6 +42,19 @@ public class TareaController {
 
         return tareaRepository.findById(id)
                 .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    //update
+    @PutMapping("/{id}/")
+    public ResponseEntity<Tarea> actualizarTarea(@PathVariable Long id, @RequestBody Tarea tareaActualizada) {
+        
+        return tareaRepository.findById(id)
+                .map(tarea ->{
+                    tarea.setTitulo(tareaActualizada.getTitulo());
+                    tarea.setCompletado(tareaActualizada.isCompletado());
+                    return ResponseEntity.ok(tareaRepository.save(tarea));
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
     
